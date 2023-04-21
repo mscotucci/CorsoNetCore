@@ -17,13 +17,13 @@ namespace Sezione2
             xmlDoc.LoadXml(GetBook());
             XDocument xdoc = XDocument.Load(new XmlNodeReader(xmlDoc));
 
-            var query = from b in xdoc.Descendants("book")
-                        where (double)b.Element("price") > 10
-                        select b;
-            foreach ( var b in query)
-            {
-                Console.WriteLine(b.Element("title").Value);
-            }
+            //var query = from b in xdoc.Descendants("book")
+            //            where (double)b.Element("price") > 10
+            //            select b;
+            //foreach ( var b in query)
+            //{
+            //    Console.WriteLine(b.Element("title").Value);
+            //}
 
             List<IBook> books = new List<IBook>();
             xdoc.Descendants("book")
@@ -47,22 +47,23 @@ namespace Sezione2
             eBook.Price = 5;
             books.Add (eBook);
 
-            var bookCheap = books.Where(book => book.IsCheap());
-            BookPrinter bp = new BookPrinter();
-            foreach ( var book in bookCheap)
-            {
-                bp.PrintToConsole(book);
-            }
-            var riciclabili = bookCheap.OfType<IBookRiciclabile>();
-            foreach (var bookRiciclabile in riciclabili)
-            {
-                bookRiciclabile.Ricicla();
-            }
+            //var bookCheap = books.Where(book => book.IsCheap());
+            //BookPrinter bp = new BookPrinter();
+            //foreach ( var book in bookCheap)
+            //{
+            //    bp.PrintToConsole(book);
+            //}
+            //var riciclabili = bookCheap.OfType<IBookRiciclabile>();
+            //foreach (var bookRiciclabile in riciclabili)
+            //{
+            //    bookRiciclabile.Ricicla();
+            //}
             IRiciclaBook riciclaBookToConsole = new RiciclaBook();
             IBookPrinter printerToConsole = new BookPrinter();
             IBookPrinter prinnterToPrinter = new BookPrinterToPrinter();
             BookStoreManager manager = new BookStoreManager(printerToConsole, riciclaBookToConsole);
             BookStoreManager managerToPrinter = new BookStoreManager(prinnterToPrinter, riciclaBookToConsole);
+            StampaBookPerAutori(books, manager);
         }
 
         private static string GetBook()
@@ -187,6 +188,19 @@ namespace Sezione2
       environment.</description>
    </book>
 </catalog>";
+        }
+
+        private static void StampaBookPerAutori(List<IBook> books,BookStoreManager bookStoreManager)
+        {
+            var grAutori = books.GroupBy(b => b.Author);
+            foreach (var gr in grAutori)
+            {
+                Console.WriteLine($"Autore = {gr.Key}");
+                foreach (var book in gr)
+                {
+                    bookStoreManager.Stampa(book);
+                }
+            }
         }
     }
 }
