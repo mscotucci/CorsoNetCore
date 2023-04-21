@@ -5,7 +5,10 @@
         static void Main(string[] args)
         {
             //EsempioArray.StampaValori();
-            Liste.StampaValori();
+            //Liste.StampaValori();
+            //LINQ.StampaValori();
+            //LINQToObjects.StampaValori();
+            LinqToXml.StampaValori();
         }
     }
 }
