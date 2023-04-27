@@ -63,7 +63,11 @@ namespace Sezione2
             IBookPrinter prinnterToPrinter = new BookPrinterToPrinter();
             BookStoreManager manager = new BookStoreManager(printerToConsole, riciclaBookToConsole);
             BookStoreManager managerToPrinter = new BookStoreManager(prinnterToPrinter, riciclaBookToConsole);
-            StampaBookPerAutori(books, manager);
+            //StampaBookPerAutori(books, manager);
+            //StampaBookEconomici(books, manager);
+            //StampaMediaPrice(books, manager);
+            //StampaBookPriceSopraMedia(books, manager);
+            StampaBookPriceSottoMedia(books, manager);
         }
 
         private static string GetBook()
@@ -202,5 +206,83 @@ namespace Sezione2
                 }
             }
         }
+
+        private static void StampaBookEconomici(List<IBook> books, BookStoreManager bookStoreManager)
+        {
+            var results = books.Where(b => b.Price<10);
+            foreach (var result in results)
+            {
+                    bookStoreManager.Stampa(result);
+            }
+        }
+
+        private static void StampaMediaPrice(List<IBook> books, BookStoreManager bookStoreManager)
+        {
+            var results = books.Average(x=>x.Price);
+            Console.WriteLine("Media {0}", results);
+        }
+
+        private static void StampaBookPriceSopraMedia(List<IBook> books, BookStoreManager bookStoreManager)
+        {
+            var media = books.Average(x => x.Price);
+            var results = from b in books
+                          let average = books.Average(x => x.Price)
+                          where b.Price > average
+                          select b;
+
+            var results1 = books
+                                    .OrderByDescending(x => x.Price)
+                                    .TakeWhile(x => x.Price > books.Average(x => x.Price));
+
+
+            //foreach (var result in results)
+            //{
+            //    bookStoreManager.Stampa(result);
+            //}
+            //Console.WriteLine("============================");
+            //foreach (var result in results)
+            //{
+            //    bookStoreManager.Stampa(result);
+            //}
+
+            var resultsDinamici = from b in books
+                                  let average = books.Average(x => x.Price)
+                                  where b.Price > average
+                                  select new
+                                  {
+                                      Book = b,
+                                      Media = average
+                                  };
+
+            foreach (var item in resultsDinamici)
+            {
+                Console.WriteLine("Media {0}", item.Media);
+                Console.WriteLine("============================");
+                bookStoreManager.Stampa(item.Book);
+            }
+        }
+
+        private static void StampaBookPriceSottoMedia(List<IBook> books, BookStoreManager bookStoreManager)
+        {
+            var results = from b in books
+                          let average = books.Average(x => x.Price)
+                          where b.Price < average
+                          select b;
+
+            var results1 = books.OrderByDescending(x => x.Price)
+                .SkipWhile(x => x.Price > books.Average(x => x.Price));
+
+
+            foreach (var result in results)
+            {
+                bookStoreManager.Stampa(result);
+            }
+            Console.WriteLine("============================");
+            foreach (var result in results)
+            {
+                bookStoreManager.Stampa(result);
+            }
+        }
+
     }
 }

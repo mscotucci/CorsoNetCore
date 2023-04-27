@@ -30,6 +30,8 @@ namespace Sezione2
             }
 
             Func<int, bool> espressioneLambda = n => n % 2 == 0;
+            Func<int,int,bool> espr=(n1,n2) => n1== n2;
+            Func<int, Utente, bool> espr2 = (n1, utente) => n1 == utente.Age;
 
             query = array.Where(QueryMioDb.GetNumeriPariAlQuadrato());
 
@@ -47,6 +49,10 @@ namespace Sezione2
 
             query = query.Where(x => x > 20);
 
+        }
+        bool EspressioneLamba(int n)
+        {
+            return n % 2 == 0;
         }
     }
 
