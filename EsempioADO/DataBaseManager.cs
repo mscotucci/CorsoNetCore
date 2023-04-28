@@ -181,7 +181,7 @@ namespace EsempioADO
         public void UpdateBook(Book book)
         {
             string updateCommand = @$"UPDATE Books
-                                                                SET Author=@Author,
+                                                                SET AuthorId=@AuthorId,
                                                                        Title=@Title,
                                                                        Genre=@Genre,
                                                                        Price=@Price,
@@ -192,7 +192,7 @@ namespace EsempioADO
             using SqlConnection conn = GetOpenedConnection();
             using SqlCommand cmd = GetSqlCommand(conn, updateCommand);
             cmd.Parameters.AddWithValue("@Id", book.Id);
-            cmd.Parameters.AddWithValue("@Author", book.Author);
+            cmd.Parameters.AddWithValue("@AuthorId", book.AuthorId);
             cmd.Parameters.AddWithValue("@Title", book.Title);
             cmd.Parameters.AddWithValue("@Genre", book.Genre);
             cmd.Parameters.AddWithValue("@Price", book.Price);
