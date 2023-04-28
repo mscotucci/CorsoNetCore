@@ -3,11 +3,11 @@
     internal class Program
     {
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\App_Data\\BookStore.mdf;Integrated Security=True;Connect Timeout=30";
             var databaseManager = new DataBaseManager(connectionString);
-            var books = databaseManager.GetBooks();
+            var books = await databaseManager.GetBooksAsync();
             IBookPrinter printer = new BookPrinter();
             char userCommand;
             do
@@ -31,25 +31,26 @@
                 switch (userCommand)
                 {
                     case 'i':
-                        databaseManager.InitDb();
-                        books = LeggiAndStampa(databaseManager, printer);
+                        await databaseManager.InitDbAsync();
+                        books = await LeggiAndStampaAsync(databaseManager, printer);
                         break;
                     case 'c':
                         //Creiamo un nuovo book
                         book = new Book();
-                        book.AuthorId = databaseManager.GetAuthors().FirstOrDefault().Id;
+                        var authors = await databaseManager.GetAuthorsAsync();
+                        book.AuthorId = authors.FirstOrDefault().Id;
                         book.Genre = Genre.Computer;
                         book.Description = "Description";
                         book.Title = "Title";
                         book.PublishDate = DateTime.Now;
                         book.Price = 12.25m;
-                        databaseManager.CreateBook(book);
-                        books = LeggiAndStampa(databaseManager, printer);
+                        await databaseManager.CreateBookAsync(book);
+                        books = await LeggiAndStampaAsync(databaseManager, printer);
                         break;
                     case 'r':
                         if (lastBook is not null)
                         {
-                            book = databaseManager.ReadBook(lastBook.Id);
+                            book = await databaseManager.ReadBookAsync(lastBook.Id);
                             printer.PrintToConsole(book);
                         }
                         break;
@@ -57,25 +58,25 @@
                         if (lastBook is not null)
                         {
                             lastBook.Description = "Descrizione modificata";
-                            databaseManager.UpdateBook(lastBook);
-                            books = LeggiAndStampa(databaseManager, printer);
+                            await databaseManager.UpdateBookAsync(lastBook);
+                            books = await LeggiAndStampaAsync(databaseManager, printer);
                         }
                         break;
                     case 'd':
                         if (lastBook is not null)
                         {
-                            databaseManager.DeleteBook(lastBook.Id);
-                            books = LeggiAndStampa(databaseManager, printer);
+                            await databaseManager.DeleteBookAsync(lastBook.Id);
+                            books = await LeggiAndStampaAsync(databaseManager, printer);
                         }
                         break;
                     case 'l':
-                        books = LeggiAndStampa(databaseManager, printer);
+                        books = await LeggiAndStampaAsync(databaseManager, printer);
                         break;
                     case 's':
                         Console.WriteLine("Insertisci il titolo da cercare");
                         string title = Console.ReadLine();
                         Console.Clear();
-                        var searchResults = databaseManager.SearchBooks(title);
+                        var searchResults = await databaseManager.SearchBooksAsync(title);
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"Risultati trovati '{searchResults.Count}'");
                         StampaBooks(searchResults.Results, printer);
@@ -86,9 +87,9 @@
                 }
             } while (userCommand != 'q');
         }
-        private static List<Book> LeggiAndStampa(DataBaseManager databaseManager, IBookPrinter bookPrinter)
+        private static async Task<List<Book>> LeggiAndStampaAsync(DataBaseManager databaseManager, IBookPrinter bookPrinter)
         {
-            var books = databaseManager.GetBooks();
+            var books = await databaseManager.GetBooksAsync();
             if (books.Count > 0)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
