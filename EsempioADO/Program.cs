@@ -5,7 +5,7 @@
 
         static void Main(string[] args)
         {
-            string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\CorsoNETCore\\CorsoNetCore\\EsempioADO\\App_Data\\BookStore.mdf;Integrated Security=True;Connect Timeout=30";
+            string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\App_Data\\BookStore.mdf;Integrated Security=True;Connect Timeout=30";
             var databaseManager = new DataBaseManager(connectionString);
             var books = databaseManager.GetBooks();
             IBookPrinter printer = new BookPrinter();
