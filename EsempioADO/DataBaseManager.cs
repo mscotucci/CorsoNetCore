@@ -17,44 +17,6 @@ namespace EsempioADO
             _connectionString = connectionString;
         }
 
-        //REFACTORING AUTORI
-        //public void InitDb()
-        //{
-        //    var books = XMLDataSource.GetBooks();
-        //    using SqlConnection conn = GetOpenedConnection();
-        //    using SqlCommand cmd = conn.CreateCommand();
-        //    int affectedRows = 0;
-        //    foreach (var book in books)
-        //    {
-        //        string insertCommand = "INSERT INTO Books(Author, Title,Genre,Price,PublishDate,Description) VALUES(@Author,@Title,@Genre,@Price,@PublishDate,@Description);";
-        //        cmd.CommandText = insertCommand;
-        //        cmd.Parameters.Add(new SqlParameter("@Title", book.Title));
-        //        cmd.Parameters.Add(new SqlParameter("@Author", book.Author));
-        //        //cmd.Parameters.Add(new SqlParameter("@Genre", book.Genre)); //refactoring genre
-        //        cmd.Parameters.Add(new SqlParameter("@Genre", book.Genre.ToString()));
-        //        cmd.Parameters.Add(new SqlParameter("@Price", book.Price));
-        //        cmd.Parameters.Add(new SqlParameter("@PublishDate", book.PublishDate));
-        //        cmd.Parameters.Add(new SqlParameter("@Description", book.Description));
-        //        try
-        //        {
-        //            affectedRows = cmd.ExecuteNonQuery();
-        //        }
-        //        catch (SqlException ex) when (ex.ErrorCode == 7978987987987987)//ErrorCode inventato!!!!!!!!!!
-        //        {
-        //            //operazioni in caso di questa tipologia di errori
-        //        }
-        //        catch (Exception)
-        //        {
-        //            throw;
-        //        }
-        //        cmd.Parameters.Clear();
-        //        if (affectedRows != 1)
-        //        {
-        //            throw new Exception($"Si è verificato un errore in inserimento book {book.Title}");
-        //        }
-        //    }
-        //}
-
         public void InitDb(bool createAuthors=false)
         {
             var books = XMLDataSource.GetBooks();
@@ -85,9 +47,7 @@ namespace EsempioADO
                 string insertCommand = "INSERT INTO Books(AuthorId, Title,Genre,Price,PublishDate,Description) VALUES(@AuthorId,@Title,@Genre,@Price,@PublishDate,@Description);";
                 cmd.CommandText = insertCommand;
                 cmd.Parameters.Add(new SqlParameter("@Title", book.Title));
-                //cmd.Parameters.Add(new SqlParameter("@Author", book.Author));refactoring autori
                 cmd.Parameters.Add(new SqlParameter("@AuthorId", authorId));
-                //cmd.Parameters.Add(new SqlParameter("@Genre", book.Genre)); //refactoring genre
                 cmd.Parameters.Add(new SqlParameter("@Genre", Enum.Parse<Genre>(book.Genre).ToString()));
                 cmd.Parameters.Add(new SqlParameter("@Price", book.Price));
                 cmd.Parameters.Add(new SqlParameter("@PublishDate", book.PublishDate));
@@ -125,10 +85,8 @@ namespace EsempioADO
                 book.Title = reader.GetString("Title");
                 book.PublishDate = reader.GetDateTime("PublishDate");
                 book.Description = reader.GetString("Description");
-                //book.Author = reader.GetString("Author"); refactoring autori
                 book.AuthorId = reader.GetInt32("AuthorId");
                 book.Price = reader.GetDecimal("Price");
-                //book.Genre = reader.GetString("Genre");refactoring genre
                 book.Genre = Enum.Parse<Genre>(reader.GetString("Genre"));
                 books.Add(book);
             }
@@ -151,9 +109,7 @@ namespace EsempioADO
                 {
                     Id = x.Field<int>("Id"),
                     Title = x.Field<string>("Title"),
-                    //Author = x.Field<string>("Author"), refactoring autori
                     AuthorId = x.Field<int>("AuthorId"),
-                    //Genre = x.Field<string>("Genre"), refactoring genre
                     Genre = Enum.Parse<Genre>(x.Field<string>("Genre")),
                     Price = x.Field<decimal>("Price"),
                     PublishDate = x.Field<DateTime>("PublishDate"),
@@ -256,9 +212,7 @@ namespace EsempioADO
                 book = new Book();
                 book.Id = reader.GetInt32("Id");
                 book.Title = reader.GetString("Title");
-                //book.Author = reader.GetString("Author");refactoring autori
                 book.AuthorId = reader.GetInt32("AuthorId");
-                //book.Genre = reader.GetString("Genre");refactoring genre
                 book.Genre = Enum.Parse<Genre>(reader.GetString("Genre"));
                 book.Price = reader.GetDecimal("Price");
                 book.PublishDate = reader.GetDateTime("PublishDate");
@@ -290,9 +244,7 @@ namespace EsempioADO
                 {
                     Id = x.Field<int>("Id"),
                     Title = x.Field<string>("Title"),
-                    //Author = x.Field<string>("Author"), refactoring autori
                     AuthorId = x.Field<int>("AuthorId"),
-                    //Genre = x.Field<string>("Genre"), refactoring genre
                     Genre = Enum.Parse<Genre>(x.Field<string>("Genre")),
                     Price = x.Field<decimal>("Price"),
                     PublishDate = x.Field<DateTime>("PublishDate"),
