@@ -50,7 +50,7 @@
                     case 'r':
                         if (lastBook is not null)
                         {
-                            book = await databaseManager.ReadBookAsync(lastBook.Id);
+                            book = await databaseManager.ReadBookWithAuthorAsync(lastBook.Id);
                             printer.PrintToConsole(book);
                         }
                         break;
@@ -76,7 +76,9 @@
                         Console.WriteLine("Insertisci il titolo da cercare");
                         string title = Console.ReadLine();
                         Console.Clear();
-                        var searchResults = await databaseManager.SearchBooksAsync(title);
+                        //var searchResults = await databaseManager.SearchBooksAsync(title);
+                        BooksSearchCriteria booksSearchCriteria = new BooksSearchCriteria(title, 1, 2);
+                        var searchResults = await databaseManager.SearchBooksAsync(booksSearchCriteria);
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"Risultati trovati '{searchResults.Count}'");
                         StampaBooks(searchResults.Results, printer);

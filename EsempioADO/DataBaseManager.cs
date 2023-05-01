@@ -485,6 +485,42 @@ namespace EsempioADO
             return book;
         }
 
+        internal async Task<Book?> ReadBookWithAuthorAsync(int id)
+        {
+            string readCommand = @"SELECT * FROM Books
+                                                            JOIN Authors ON Authors.Id=Books.AuthorId
+                                                            WHERE Books.Id=@Id";
+            using SqlConnection conn = await GetOpenedConnectionAsync();
+            using SqlCommand cmd = GetSqlCommand(conn, readCommand);
+            cmd.CommandText = readCommand;
+            cmd.Parameters.Add(new SqlParameter("@Id", id));
+            using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+            int readerCount = 0;
+            Book? book = null;
+            while (await reader.ReadAsync())
+            {
+                if (readerCount > 1)
+                {
+                    throw new Exception($"Sono presenti più elementi con id {id}");
+                }
+                book = new Book();
+                book.Id = reader.GetInt32("Id");
+                book.Title = reader.GetString("Title");
+                book.AuthorId = reader.GetInt32("AuthorId");
+                book.Genre = Enum.Parse<Genre>(reader.GetString("Genre"));
+                book.Price = reader.GetDecimal("Price");
+                book.PublishDate = reader.GetDateTime("PublishDate");
+                book.Description = reader.GetString("Description");
+                book.Author = new Author
+                {
+                    Id = reader.GetInt32("AuthorId"),
+                    Name = reader.GetString("Name"),
+                };
+                readerCount++;
+            }
+            return book;
+        }
+
         public async Task<SearchResults<Book>> SearchBooksAsync(string title)
         {
             List<Book> books = new List<Book>();
@@ -520,6 +556,46 @@ namespace EsempioADO
                 Results = books
             };
 
+        }
+
+        public async Task<SearchResults<Book>> SearchBooksAsync(BooksSearchCriteria booksSearchCriteria)
+        {
+            //Query per recuperare il numero di elementi
+            //Query per recuperare la lista degli elementi filtrati
+            List<Book> books = new List<Book>();
+            string command = "SELECT * FROM Books WHERE  Title LIKE @Title ORDER BY Title OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY; SELECT COUNT(*) FROM Books WHERE  Title LIKE @Title";
+            using SqlConnection conn = await GetOpenedConnectionAsync();
+            using SqlCommand cmd = GetSqlCommand(conn, command);
+            cmd.Parameters.AddWithValue("@Title", $"%{booksSearchCriteria.Search}%");
+            cmd.Parameters.AddWithValue("@Limit", booksSearchCriteria.Limit);
+            cmd.Parameters.AddWithValue("@Offset", booksSearchCriteria.Offset);
+            using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+            DataSet dataSet = new DataSet();
+            do
+            {
+                DataTable dt = new DataTable();
+                dt.Load(reader);
+                dataSet.Tables.Add(dt);
+            } while (!reader.IsClosed);
+
+            dataSet.Tables[0].AsEnumerable()
+                .ToList()
+                .ForEach(x => books.Add(new Book
+                {
+                    Id = x.Field<int>("Id"),
+                    Title = x.Field<string>("Title"),
+                    AuthorId = x.Field<int>("AuthorId"),
+                    Genre = Enum.Parse<Genre>(x.Field<string>("Genre")),
+                    Price = x.Field<decimal>("Price"),
+                    PublishDate = x.Field<DateTime>("PublishDate"),
+                    Description = x.Field<string>("Description")
+                }));
+            int booksCount = Convert.ToInt32(dataSet.Tables[1].Rows[0][0]);
+            return new SearchResults<Book>
+            {
+                Results = books,
+                Count = booksCount
+            };
         }
 
         private async Task<SqlConnection> GetOpenedConnectionAsync()

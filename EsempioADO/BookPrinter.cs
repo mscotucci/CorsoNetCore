@@ -11,7 +11,7 @@ namespace EsempioADO
         public void PrintToConsole(Book book)
         {
             Console.WriteLine($"Book({book.Id}) - {book.Title}");
-            Console.WriteLine($"Author: {book.Author}");
+            Console.WriteLine($"Author: {book.Author?.Name ?? "-"}");
             Console.WriteLine($"Genre:{book.Genre} Price: {book.Price:C2} PublishDate:{book.PublishDate:d} Description:{book.Description}");
             Console.WriteLine();
         }
