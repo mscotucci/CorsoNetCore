@@ -6,7 +6,7 @@
         static async Task Main(string[] args)
         {
             string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\App_Data\\BookStore.mdf;Integrated Security=True;Connect Timeout=30";
-            var databaseManager = new DataBaseManager(connectionString);
+            IDataBaseManager databaseManager = new ADODataBaseManager(connectionString);
             var books = await databaseManager.GetBooksAsync();
             IBookPrinter printer = new BookPrinter();
             char userCommand;
@@ -89,7 +89,7 @@
                 }
             } while (userCommand != 'q');
         }
-        private static async Task<List<Book>> LeggiAndStampaAsync(DataBaseManager databaseManager, IBookPrinter bookPrinter)
+        private static async Task<List<Book>> LeggiAndStampaAsync(IDataBaseManager databaseManager, IBookPrinter bookPrinter)
         {
             var books = await databaseManager.GetBooksAsync();
             if (books.Count > 0)

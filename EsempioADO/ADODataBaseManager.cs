@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace EsempioADO
 {
-    public class DataBaseManager
+    public class ADODataBaseManager : IDataBaseManager
     {
         private readonly string _connectionString;
 
-        public DataBaseManager(string connectionString)
+        public ADODataBaseManager(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public void InitDb(bool createAuthors=false)
+        public void InitDb(bool createAuthors = false)
         {
             var books = XMLDataSource.GetBooks();
             using SqlConnection conn = GetOpenedConnection();
@@ -194,7 +194,7 @@ namespace EsempioADO
             }
         }
 
-        internal Book? ReadBook(int id)
+        public Book? ReadBook(int id)
         {
             string readCommand = "SELECT * FROM Books WHERE Id=@Id";
             using SqlConnection conn = GetOpenedConnection();
@@ -229,7 +229,7 @@ namespace EsempioADO
             string command = "SELECT * FROM Books WHERE  Title LIKE @Title; SELECT COUNT(*) FROM Books WHERE  Title LIKE @Title";
             using SqlConnection conn = GetOpenedConnection();
             using SqlCommand cmd = GetSqlCommand(conn, command);
-            cmd.Parameters.AddWithValue("@Title",$"%{title}%");
+            cmd.Parameters.AddWithValue("@Title", $"%{title}%");
             using SqlDataReader reader = cmd.ExecuteReader();
             DataSet dataSet = new DataSet();
             do
@@ -456,7 +456,7 @@ namespace EsempioADO
             return authors;
         }
 
-        internal async Task<Book?> ReadBookAsync(int id)
+        public async Task<Book?> ReadBookAsync(int id)
         {
             string readCommand = "SELECT * FROM Books WHERE Id=@Id";
             using SqlConnection conn = await GetOpenedConnectionAsync();
@@ -485,7 +485,7 @@ namespace EsempioADO
             return book;
         }
 
-        internal async Task<Book?> ReadBookWithAuthorAsync(int id)
+        public async Task<Book?> ReadBookWithAuthorAsync(int id)
         {
             string readCommand = @"SELECT * FROM Books
                                                             JOIN Authors ON Authors.Id=Books.AuthorId
@@ -608,6 +608,16 @@ namespace EsempioADO
         private SqlCommand GetSqlCommand(SqlConnection conn, string command)
         {
             return new SqlCommand(command, conn);
+        }
+
+        public Book? ReadBookWithAuthor(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SearchResults<Book> SearchBooks(BooksSearchCriteria booksSearchCriteria)
+        {
+            throw new NotImplementedException();
         }
     }
 }
