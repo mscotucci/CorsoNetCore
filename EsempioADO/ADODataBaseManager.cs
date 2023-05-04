@@ -619,5 +619,10 @@ namespace EsempioADO
         {
             throw new NotImplementedException();
         }
+
+        public SearchResults<Author> SearchAuthor(AuthorSearchCriteria authorSearchCriteria)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -21,6 +21,7 @@
         SearchResults<Book> SearchBooks(BooksSearchCriteria booksSearchCriteria);
         Task<SearchResults<Book>> SearchBooksAsync(BooksSearchCriteria booksSearchCriteria);
         Task<SearchResults<Book>> SearchBooksAsync(string title);
+        SearchResults<Author> SearchAuthor(AuthorSearchCriteria authorSearchCriteria);
         void UpdateBook(Book book);
         Task UpdateBookAsync(Book book);
         void UpdateBookTitle(int bookId, string title);
