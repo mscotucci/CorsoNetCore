@@ -6,20 +6,13 @@ using System.Threading.Tasks;
 
 namespace EsempioADO
 {
-    public class BooksSearchCriteria
+    public class BooksSearchCriteria : BaseSearchCriteria
     {
-        public BooksSearchCriteria(string search, int page, int limit)
+        public BooksSearchCriteria(string search, int page, int limit) : base(page, limit)
         {
             Search = search ?? "";
-            Page = Math.Max(1, page);
-            Limit = Math.Max(1, limit);
-
-            Offset = (Page - 1) * Limit;
         }
         public string Search { get; }
-        public int Page { get; }
 
-        public int Limit { get; }
-        public int Offset { get; }
     }
 }
