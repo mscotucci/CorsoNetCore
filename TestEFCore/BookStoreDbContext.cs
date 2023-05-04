@@ -22,5 +22,40 @@ namespace TestEFCore
 
             optionsBuilder.LogTo(message=>Debug.WriteLine(message));
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+            modelBuilder.Entity<Author>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(256);
+            });
+
+            modelBuilder.Entity<Book>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(512);
+
+                entity.Property(e => e.Genre)
+                    .HasMaxLength(256)
+                    .HasConversion<string>();
+
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.PublishDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(256);
+
+                entity.HasOne(d => d.Author)
+                    .WithMany(p => p.Books)
+                    .HasForeignKey(d => d.AuthorId); ;
+            });
+        }
     }
 }

@@ -12,7 +12,7 @@ using TestEFCore;
 namespace TestEFCore.Migrations
 {
     [DbContext(typeof(BookStoreDbContext))]
-    [Migration("20230504080651_Initial")]
+    [Migration("20230504092741_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -35,7 +35,8 @@ namespace TestEFCore.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -55,20 +56,24 @@ namespace TestEFCore.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
-                    b.Property<int>("Genre")
-                        .HasColumnType("int");
+                    b.Property<string>("Genre")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime>("PublishDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 

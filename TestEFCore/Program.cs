@@ -32,7 +32,7 @@ namespace TestEFCore
                 switch (userCommand)
                 {
                     case 'i':
-                        databaseManager.InitDb();
+                        databaseManager.InitDb(true);
                         books = LeggiAndStampa(databaseManager, printer);
                         break;
                     case 'c':
