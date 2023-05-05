@@ -78,9 +78,14 @@
                         Console.Clear();
                         //var searchResults = await databaseManager.SearchBooksAsync(title);
                         BooksSearchCriteria booksSearchCriteria = new BooksSearchCriteria(title, 1, 2);
+                        booksSearchCriteria.SetPublishDateStart(new DateTime(2001,1,1));
+                        booksSearchCriteria.SetPublishDateEnd(new DateTime(2001, 12, 31));
                         var searchResults = await databaseManager.SearchBooksAsync(booksSearchCriteria);
+
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine($"Risultati trovati '{searchResults.Count}'");
+                        //Console.WriteLine($"Risultati trovati '{searchResults.Count}'"); 
+                        var totalPages = (int)Math.Ceiling(searchResults.Count / (decimal)booksSearchCriteria.Limit);
+                        Console.WriteLine($"Pagina {booksSearchCriteria.Page} di {totalPages} Risultati: {searchResults.Results.Count} di '{searchResults.Count}'");
                         StampaBooks(searchResults.Results, printer);
                         Console.ResetColor();
                         break;

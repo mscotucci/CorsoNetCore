@@ -558,18 +558,75 @@ namespace EsempioADO
 
         }
 
+
         public async Task<SearchResults<Book>> SearchBooksAsync(BooksSearchCriteria booksSearchCriteria)
         {
             //Query per recuperare il numero di elementi
             //Query per recuperare la lista degli elementi filtrati
             List<Book> books = new List<Book>();
-            string command = "SELECT * FROM Books WHERE  Title LIKE @Title ORDER BY Title OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY; " +
+            string where = "WHERE Title LIKE @Title";
+            List<SqlParameter> sp = new List<SqlParameter>();
+            sp.Add(new SqlParameter("@Title", $"%{booksSearchCriteria.Search}%"));
+            sp.Add(new SqlParameter("@Limit", booksSearchCriteria.Limit));
+            sp.Add(new SqlParameter("@Offset", booksSearchCriteria.Offset));
+            if (booksSearchCriteria.PublishDateStart != null)
+            {
+                where += " AND PublishDate >= @PublishDateStart";
+                sp.Add(new SqlParameter("@PublishDateStart", booksSearchCriteria.PublishDateStart));
+            }
+            if (booksSearchCriteria.PublishDateEnd != null)
+            {
+                where += " AND PublishDate <= @PublishDateEnd";
+                sp.Add(new SqlParameter("@PublishDateEnd", booksSearchCriteria.PublishDateEnd));
+            }
+            string command = $"SELECT * FROM Books {where} ORDER BY Title OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY; SELECT COUNT(*) FROM Books {where}";
+            using SqlConnection conn = await GetOpenedConnectionAsync();
+            using SqlCommand cmd = GetSqlCommand(conn, command);
+            cmd.Parameters.AddRange(sp.ToArray());
+            using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+            DataSet dataSet = new DataSet();
+            do
+            {
+                DataTable dt = new DataTable();
+                dt.Load(reader);
+                dataSet.Tables.Add(dt);
+            } while (!reader.IsClosed);
+
+            dataSet.Tables[0].AsEnumerable()
+            .ToList()
+            .ForEach(x => books.Add(new Book
+            {
+                Id = x.Field<int>("Id"),
+                Title = x.Field<string>("Title"),
+                AuthorId = x.Field<int>("AuthorId"),
+                Genre = Enum.Parse<Genre>(x.Field<string>("Genre")),
+                Price = x.Field<decimal>("Price"),
+                PublishDate = x.Field<DateTime>("PublishDate"),
+                Description = x.Field<string>("Description")
+            }));
+            int booksCount = Convert.ToInt32(dataSet.Tables[1].Rows[0][0]);
+            return new SearchResults<Book>
+            {
+                Results = books,
+                Count = booksCount
+            };
+        }
+
+        /*
+        public async Task<SearchResults<Book>> SearchBooksAsync(BooksSearchCriteria booksSearchCriteria)
+        {
+            //Query per recuperare il numero di elementi
+            //Query per recuperare la lista degli elementi filtrati
+            List<Book> books = new List<Book>();
+            string command = "SELECT * FROM Books WHERE  Title LIKE @Title AND PublishDate between @dt1 and @dt2 ORDER BY Title OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY; " +
                                              "SELECT COUNT(*) FROM Books WHERE  Title LIKE @Title";
             using SqlConnection conn = await GetOpenedConnectionAsync();
             using SqlCommand cmd = GetSqlCommand(conn, command);
             cmd.Parameters.AddWithValue("@Title", $"%{booksSearchCriteria.Search}%");
             cmd.Parameters.AddWithValue("@Limit", booksSearchCriteria.Limit);
             cmd.Parameters.AddWithValue("@Offset", booksSearchCriteria.Offset);
+            cmd.Parameters.AddWithValue("@dt1", booksSearchCriteria.PublishDateStart);
+            cmd.Parameters.AddWithValue("@dt2", booksSearchCriteria.PublishDateEnd);
             using SqlDataReader reader = await cmd.ExecuteReaderAsync();
             DataSet dataSet = new DataSet();
             do
@@ -598,6 +655,7 @@ namespace EsempioADO
                 Count = booksCount
             };
         }
+        */
 
         private async Task<SqlConnection> GetOpenedConnectionAsync()
         {
