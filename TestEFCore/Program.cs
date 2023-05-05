@@ -78,6 +78,8 @@ namespace TestEFCore
                         Console.Clear();
                         //var searchResults = await databaseManager.SearchBooksAsync(title);
                         BooksSearchCriteria booksSearchCriteria = new BooksSearchCriteria(title, 1, 2);
+                        booksSearchCriteria.SetPublishDateStart(new DateTime(2001, 1, 1));
+                        booksSearchCriteria.SetPublishDateEnd(new DateTime(2001, 12, 31));
                         var searchResults = await databaseManager.SearchBooksAsync(booksSearchCriteria);
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         var totalPages = (int)Math.Ceiling(searchResults.Count / (decimal)booksSearchCriteria.Limit);

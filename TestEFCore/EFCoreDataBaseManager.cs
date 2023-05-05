@@ -234,6 +234,14 @@ namespace TestEFCore
             using (var context = new BookStoreDbContext())
             {
                 var query = context.Books.Where(x => x.Title.Contains(booksSearchCriteria.Search));
+                if(booksSearchCriteria.PublishDateStart != null)
+                {
+                    query = query.Where(x => x.PublishDate >= booksSearchCriteria.PublishDateStart);
+                }
+                if(booksSearchCriteria.PublishDateEnd != null)
+                {
+                    query = query.Where(x => x.PublishDate <= booksSearchCriteria.PublishDateEnd);
+                }
                 var pagedQuery=query
                     .Skip(booksSearchCriteria.Offset)
                     .Take(booksSearchCriteria.Limit);
