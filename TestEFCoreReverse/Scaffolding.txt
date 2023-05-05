@@ -1,0 +1,5 @@
+﻿installare il pacchetto NuGet per Microsoft.EntityFrameworkCore.Design
+
+dotnet tool install --global dotnet-ef
+
+dotnet ef dbcontext scaffold "Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\CorsoNETCore\CorsoNetCore\EsempioADO\App_Data\BookStore.mdf;Integrated Security=True;Connect Timeout=30" Microsoft.EntityFrameworkCore.SqlServer -c BookStoreContext

@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sezione3", "Sezione3\Sezion
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EsempioADO", "EsempioADO\EsempioADO.csproj", "{8A1E602D-DC71-4926-A7B8-DF19FB8C721E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestEFCore", "TestEFCore\TestEFCore.csproj", "{078BFF06-5CDC-4EFD-B861-CB4E9BC184B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestEFCore", "TestEFCore\TestEFCore.csproj", "{078BFF06-5CDC-4EFD-B861-CB4E9BC184B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestEFCoreReverse", "TestEFCoreReverse\TestEFCoreReverse.csproj", "{6B4A7876-D25F-45EE-8B56-962D5A675AC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{078BFF06-5CDC-4EFD-B861-CB4E9BC184B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{078BFF06-5CDC-4EFD-B861-CB4E9BC184B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{078BFF06-5CDC-4EFD-B861-CB4E9BC184B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B4A7876-D25F-45EE-8B56-962D5A675AC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B4A7876-D25F-45EE-8B56-962D5A675AC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B4A7876-D25F-45EE-8B56-962D5A675AC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B4A7876-D25F-45EE-8B56-962D5A675AC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
