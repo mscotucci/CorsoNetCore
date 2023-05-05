@@ -89,6 +89,13 @@
                         StampaBooks(searchResults.Results, printer);
                         Console.ResetColor();
                         break;
+                    case 'x':
+                        List<Author> autori = await databaseManager.GetAuthorsHaveMoreBooks();
+                        foreach (Author author in autori)
+                        {
+                            Console.WriteLine(author.Name);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -123,6 +130,7 @@
             Console.WriteLine("'d' => Delete Last Book");
             Console.WriteLine("'l' => Lista Book");
             Console.WriteLine("'s' => Search Book");
+            Console.WriteLine("'x' => Autori con più libri");
             Console.WriteLine("'q' => Esci");
             Console.ResetColor();
         }

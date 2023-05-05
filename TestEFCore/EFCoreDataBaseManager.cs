@@ -343,5 +343,15 @@ namespace TestEFCore
 
             }
         }
+
+        public async Task<List<Author>> GetAuthorsHaveMoreBooks()
+        {
+            using ( var context = new BookStoreDbContext())
+            {
+                var query = context.Authors.Where(x => x.Books.Count() > 1);
+                var authorsFromDb = await query.ToListAsync();
+                return authorsFromDb;
+            }
+        }
     }
 }

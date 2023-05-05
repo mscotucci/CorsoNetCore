@@ -655,6 +655,8 @@ namespace EsempioADO
                 Count = booksCount
             };
         }
+
+        
         */
 
         private async Task<SqlConnection> GetOpenedConnectionAsync()
@@ -682,6 +684,20 @@ namespace EsempioADO
         public SearchResults<Author> SearchAuthor(AuthorSearchCriteria authorSearchCriteria)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<Author>> GetAuthorsHaveMoreBooks()
+        {
+            List<Author> result = new List<Author>();
+            string command = $"SELECT [a].[Id], [a].[Name] FROM [Authors] AS [a] WHERE ( SELECT COUNT(*) FROM [Books] AS [b] WHERE [a].[Id] = [b].[AuthorId]) > 1";
+            using SqlConnection conn = await GetOpenedConnectionAsync();
+            using SqlCommand cmd = GetSqlCommand(conn, command);
+            using SqlDataReader reader = await cmd.ExecuteReaderAsync();
+            while(await reader.ReadAsync())
+            {
+                result.Add(new Author { Id = reader.GetInt32("Id"), Name = reader.GetString("Name") });
+            }
+            return result;
         }
     }
 }
