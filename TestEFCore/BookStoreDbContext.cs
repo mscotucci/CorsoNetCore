@@ -20,7 +20,7 @@ namespace TestEFCore
 
             optionsBuilder.UseSqlServer(connectionString);
 
-            optionsBuilder.LogTo(message=>Debug.WriteLine(message));
+            optionsBuilder.LogTo(message => Debug.WriteLine(message), Microsoft.Extensions.Logging.LogLevel.Information);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -563,7 +563,8 @@ namespace EsempioADO
             //Query per recuperare il numero di elementi
             //Query per recuperare la lista degli elementi filtrati
             List<Book> books = new List<Book>();
-            string command = "SELECT * FROM Books WHERE  Title LIKE @Title ORDER BY Title OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY; SELECT COUNT(*) FROM Books WHERE  Title LIKE @Title";
+            string command = "SELECT * FROM Books WHERE  Title LIKE @Title ORDER BY Title OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY; " +
+                                             "SELECT COUNT(*) FROM Books WHERE  Title LIKE @Title";
             using SqlConnection conn = await GetOpenedConnectionAsync();
             using SqlCommand cmd = GetSqlCommand(conn, command);
             cmd.Parameters.AddWithValue("@Title", $"%{booksSearchCriteria.Search}%");

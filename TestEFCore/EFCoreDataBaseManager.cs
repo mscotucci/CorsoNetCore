@@ -218,12 +218,13 @@ namespace TestEFCore
         {
             using (var context = new BookStoreDbContext())
             {
-                var query = context.Books.Where(x => x.Title.Contains(booksSearchCriteria.Search))
+                var query = context.Books.Where(x => x.Title.Contains(booksSearchCriteria.Search));
+                var pagedQuery =query
                     .Skip(booksSearchCriteria.Offset)
                     .Take(booksSearchCriteria.Limit);
                 SearchResults<Book> searchResults = new SearchResults<Book>();
                 searchResults.Count = query.Count();
-                searchResults.Results = query.ToList();
+                searchResults.Results = pagedQuery.ToList();
                 return searchResults;
             }
         }
@@ -232,12 +233,13 @@ namespace TestEFCore
         {
             using (var context = new BookStoreDbContext())
             {
-                var query = context.Books.Where(x => x.Title.Contains(booksSearchCriteria.Search))
+                var query = context.Books.Where(x => x.Title.Contains(booksSearchCriteria.Search));
+                var pagedQuery=query
                     .Skip(booksSearchCriteria.Offset)
                     .Take(booksSearchCriteria.Limit);
                 SearchResults<Book> searchResults = new SearchResults<Book>();
                 searchResults.Count = await query.CountAsync();
-                searchResults.Results = await query.ToListAsync();
+                searchResults.Results = await pagedQuery.ToListAsync();
                 return searchResults;
             }
         }
