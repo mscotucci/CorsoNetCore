@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using TestWebApi.Entities;
 using TestWebApi.Infrastructure;
 using TestWebApi.Requests.Books;
@@ -20,9 +21,46 @@ namespace TestWebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBooks()
         {
-            var books = await _dataBaseManager.GetBooksAsync();
-            return Ok(books);
+            List<Book> books = await _dataBaseManager.GetBooksAsync();
+
+            IEnumerable<BookModelResponse> response = books.Select(x => new BookModelResponse
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                AuthorId = x.AuthorId,
+                Genre = x.Genre.ToString(),
+                Price = x.Price,
+                PublishDate = x.PublishDate
+            });
+            
+            return Ok(response);
         }
+
+        
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetSingleBook(int id)
+        {
+            Book? book = await _dataBaseManager.ReadBookAsync(id);
+            if (book == null) 
+            {
+                return NotFound();
+            }
+
+            BookModelResponse bookResponse = new BookModelResponse();
+
+            
+            bookResponse.Id = book.Id;
+            bookResponse.Title = book.Title;    
+            bookResponse.Description = book.Description;
+            bookResponse.AuthorId = book.AuthorId;  
+            bookResponse.PublishDate = book.PublishDate;
+            bookResponse.Price = book.Price;
+            bookResponse.Genre = book.Genre.ToString();
+
+            return Ok(bookResponse);
+        }
+        
 
         [HttpPost]
         public async Task<IActionResult> CreateBook([FromBody] CreateBookRequest createBookRequest)
