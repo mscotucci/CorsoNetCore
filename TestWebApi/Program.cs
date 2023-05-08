@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TestWebApi.Infrastructure;
+using TestWebApi.Infrastructure.ADO;
+using TestWebApi.Infrastructure.EFCore;
 
 namespace TestWebApi
 {
@@ -18,6 +20,8 @@ namespace TestWebApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddTransient<IDataBaseManager, EFCoreDataBaseManager>();
 
             var app = builder.Build();
 
