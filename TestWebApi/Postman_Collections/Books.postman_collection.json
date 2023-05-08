@@ -1,0 +1,156 @@
+{
+	"info": {
+		"_postman_id": "e6b669f0-56fd-4c0a-8136-264eb8842dc4",
+		"name": "Books",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6564619",
+		"_collection_link": "https://warped-star-681566.postman.co/workspace/BookStore~50ecb872-7b3f-4c3e-8fe1-8fdea1d7da4d/collection/6564619-e6b669f0-56fd-4c0a-8136-264eb8842dc4?action=share&creator=6564619&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Get Books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7046/api/Books?Page=1&PageSize=20",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7046",
+					"path": [
+						"api",
+						"Books"
+					],
+					"query": [
+						{
+							"key": "Page",
+							"value": "1"
+						},
+						{
+							"key": "PageSize",
+							"value": "20"
+						},
+						{
+							"key": "Title",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "PublishDateStart",
+							"value": "2001-01-01",
+							"disabled": true
+						},
+						{
+							"key": "PublishDateEnd",
+							"value": "2000-12-31",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Books",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"authorId\": 8,\r\n    \"title\": \"Nuovo adfdsfsadf\",\r\n    \"genre\": \"Computer\",\r\n    \"price\": 89.67,\r\n    \"publishDate\": \"2023-12-09T00:00:00\",\r\n    \"description\": \"Descrizione\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7046/api/Books",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7046",
+					"path": [
+						"api",
+						"Books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Book",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":19,\r\n    \"description\": \"Descrizione Modificata\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7046/api/Books",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7046",
+					"path": [
+						"api",
+						"Books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Book",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7046/api/Books/18",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7046",
+					"path": [
+						"api",
+						"Books",
+						"18"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Book",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7046/api/Books/19",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7046",
+					"path": [
+						"api",
+						"Books",
+						"19"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
