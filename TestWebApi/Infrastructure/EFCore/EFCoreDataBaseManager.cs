@@ -79,19 +79,36 @@ public class EFCoreDataBaseManager : IDataBaseManager
         return await _context.Books.SingleOrDefaultAsync(x => x.Id == id);
     }
 
-
-    public SearchResults<Book> SearchBooks(string title)
-    {
-        var query = _context.Books.Where(x => x.Title.Contains(title));
-        SearchResults<Book> searchResults = new SearchResults<Book>();
-        searchResults.Count = query.Count();
-        searchResults.Results = query.ToList();
-        return searchResults;
-    }
-
     public SearchResults<Book> SearchBooks(BooksSearchCriteria booksSearchCriteria)
     {
         var query = _context.Books.Where(x => x.Title.Contains(booksSearchCriteria.Search));
+        if (booksSearchCriteria.PublishDateStart != null)
+        {
+            query = query.Where(x => x.PublishDate >= booksSearchCriteria.PublishDateStart);
+        }
+        if (booksSearchCriteria.PublishDateEnd != null)
+        {
+            query = query.Where(x => x.PublishDate <= booksSearchCriteria.PublishDateEnd);
+        }
+        if (booksSearchCriteria.SortBy != null)
+        {
+            bool asc = booksSearchCriteria.SortOrder == "asc" || false;
+            switch (booksSearchCriteria.SortBy)
+            {
+                case "title":
+                    query = asc ? query.OrderBy(x => x.Title) : query.OrderByDescending(x => x.Title);
+                    break;
+                case "publishDate":
+                    query = asc ? query.OrderBy(x => x.PublishDate) : query.OrderByDescending(x => x.PublishDate);
+                    break;
+                case "price":
+                    query = asc ? query.OrderBy(x => x.Price) : query.OrderByDescending(x => x.Price);
+                    break;
+                default:
+                    query = asc ? query.OrderBy(x => x.Title) : query.OrderByDescending(x => x.Title);
+                    break;
+            }
+        }
         var pagedQuery = query
             .Skip(booksSearchCriteria.Offset)
             .Take(booksSearchCriteria.Limit);
@@ -111,6 +128,25 @@ public class EFCoreDataBaseManager : IDataBaseManager
         if (booksSearchCriteria.PublishDateEnd != null)
         {
             query = query.Where(x => x.PublishDate <= booksSearchCriteria.PublishDateEnd);
+        }
+        if (booksSearchCriteria.SortBy != null)
+        {
+            bool asc = booksSearchCriteria.SortOrder == null || booksSearchCriteria.SortOrder == "asc" || false;
+            switch (booksSearchCriteria.SortBy)
+            {
+                case "title":
+                    query = asc ? query.OrderBy(x => x.Title) : query.OrderByDescending(x => x.Title);
+                    break;
+                case "publishDate":
+                    query = asc ? query.OrderBy(x => x.PublishDate) : query.OrderByDescending(x => x.PublishDate);
+                    break;
+                case "price":
+                    query = asc ? query.OrderBy(x => x.Price) : query.OrderByDescending(x => x.Price);
+                    break;
+                default:
+                    query = asc ? query.OrderBy(x => x.Title) : query.OrderByDescending(x => x.Title);
+                    break;
+            }
         }
         var pagedQuery = query
             .Skip(booksSearchCriteria.Offset)

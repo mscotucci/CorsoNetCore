@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BookStoreApi.Requests.Books;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using TestWebApi.Entities;
 using TestWebApi.Infrastructure;
+using TestWebApi.Infrastructure.SearchCriteria;
 using TestWebApi.Requests.Books;
+using TestWebApi.Responses;
 using TestWebApi.Responses.Books;
 
 namespace TestWebApi.Controllers
@@ -19,25 +22,33 @@ namespace TestWebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBooks()
+        public async Task<IActionResult> GetBooks([FromQuery] SearchBookRequest searchBookRequest)
         {
-            List<Book> books = await _dataBaseManager.GetBooksAsync();
+            BooksSearchCriteria booksSearchCriteria=new BooksSearchCriteria(searchBookRequest.Title,searchBookRequest.Page,searchBookRequest.PageSize);
+            booksSearchCriteria.SetPublishDateStart(searchBookRequest.PublishDateStart);
+            booksSearchCriteria.SetPublishDateEnd(searchBookRequest.PublishDateEnd);
+            booksSearchCriteria.SortBy=searchBookRequest.SortBy;
+            booksSearchCriteria.SortOrder=searchBookRequest.SortOrder;
+            SearchResults<Book> booksSearchResults = await _dataBaseManager.SearchBooksAsync(booksSearchCriteria);
 
-            IEnumerable<BookModelResponse> response = books.Select(x => new BookModelResponse
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                AuthorId = x.AuthorId,
-                Genre = x.Genre.ToString(),
-                Price = x.Price,
-                PublishDate = x.PublishDate
-            });
+            PagedResultsResponse<BookModelResponse> response = new(
+                searchBookRequest.Page, 
+                searchBookRequest.PageSize,
+                booksSearchResults.Count, 
+                booksSearchResults.Results.Select(x => new BookModelResponse
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    AuthorId = x.AuthorId,
+                    Genre = x.Genre.ToString(),
+                    Price = x.Price,
+                    PublishDate = x.PublishDate
+                }));
             
             return Ok(response);
         }
 
-        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleBook(int id)
         {

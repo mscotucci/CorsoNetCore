@@ -13,4 +13,6 @@ public abstract class BaseSearchCriteria
 
     public int Limit { get; }
     public int Offset { get; }
+    public string? SortBy { get; set; }
+    public string? SortOrder { get; set;}
 }
