@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using TestWebApi.Application;
+using TestWebApi.Application.Impl;
 using TestWebApi.Infrastructure;
 using TestWebApi.Infrastructure.ADO;
 using TestWebApi.Infrastructure.EFCore;
@@ -21,7 +23,7 @@ namespace TestWebApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddTransient<IDataBaseManager, EFCoreDataBaseManager>();
+            builder.Services.AddTransient<IBooksService, BooksService>();
 
             var app = builder.Build();
 
