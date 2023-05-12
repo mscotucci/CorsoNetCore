@@ -136,7 +136,11 @@ namespace TestWebApi.Application.Impl
 
         public PagedResultsResponse<BookModelResponse> SearchBooks(SearchBookRequest searchBookRequest)
         {
-            var query = _context.Books.Where(x => x.Title.Contains(searchBookRequest.Title));
+            IQueryable<Book> query = _context.Books;
+            if (searchBookRequest.Title != null)
+            {
+                query = query.Where(x => x.Title.Contains(searchBookRequest.Title));
+            }
             if (searchBookRequest.PublishDateStart != null)
             {
                 query = query.Where(x => x.PublishDate >= searchBookRequest.PublishDateStart);
@@ -164,13 +168,9 @@ namespace TestWebApi.Application.Impl
                         break;
                 }
             }
-            var pagedQuery = query
-                .Skip(searchBookRequest.Page)
-                .Take(searchBookRequest.PageSize);
-
             int totalCount = query.Count();
 
-            List<BookModelResponse> results = pagedQuery.Select(book => new BookModelResponse
+            var pagedQuery = query.Select(book => new BookModelResponse
             {
                 Id = book.Id,
                 AuthorId = book.AuthorId,
@@ -179,20 +179,24 @@ namespace TestWebApi.Application.Impl
                 Price = book.Price,
                 PublishDate = book.PublishDate,
                 Title = book.Title,
-            }).ToList();
+            });
 
-            PagedResultsResponse<BookModelResponse> searchResults = new PagedResultsResponse<BookModelResponse>(
+            PagedResultsResponse<BookModelResponse> searchResults =PagedResultsResponse<BookModelResponse>.Create(
                 searchBookRequest.Page,
                 searchBookRequest.PageSize,
                  totalCount,
-                 results);
+                 pagedQuery);
 
             return searchResults;
         }
 
         public async Task<PagedResultsResponse<BookModelResponse>> SearchBooksAsync(SearchBookRequest searchBookRequest)
         {
-            var query = _context.Books.Where(x => x.Title.Contains(searchBookRequest.Title));
+           var query = _context.Books.AsQueryable();
+            if (searchBookRequest.Title != null)
+            {
+                query = query.Where(x => x.Title.Contains(searchBookRequest.Title));
+            }
             if (searchBookRequest.PublishDateStart != null)
             {
                 query = query.Where(x => x.PublishDate >= searchBookRequest.PublishDateStart);
@@ -220,13 +224,10 @@ namespace TestWebApi.Application.Impl
                         break;
                 }
             }
-            var pagedQuery = query
-                .Skip(searchBookRequest.Page)
-                .Take(searchBookRequest.PageSize);
-
+            
             int totalCount = await query.CountAsync();
 
-            List<BookModelResponse> results = await pagedQuery.Select(book => new BookModelResponse
+            var pagedQuery = query.Select(book => new BookModelResponse
             {
                 Id = book.Id,
                 AuthorId = book.AuthorId,
@@ -235,14 +236,14 @@ namespace TestWebApi.Application.Impl
                 Price = book.Price,
                 PublishDate = book.PublishDate,
                 Title = book.Title,
-            }).ToListAsync();
+            });
 
-            PagedResultsResponse<BookModelResponse> searchResults = new PagedResultsResponse<BookModelResponse>(
+            PagedResultsResponse<BookModelResponse> searchResults = await PagedResultsResponse<BookModelResponse>.CreateAsync(
                 searchBookRequest.Page,
                 searchBookRequest.PageSize,
                  totalCount,
-                 results);
-            
+                 pagedQuery);
+
             return searchResults;
         }
 
