@@ -23,20 +23,6 @@ namespace TestWebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBooks([FromQuery] SearchBookRequest searchBookRequest)
         {
-            BooksSearchCriteria booksSearchCriteria=new BooksSearchCriteria(searchBookRequest.Title,searchBookRequest.Page,searchBookRequest.PageSize);
-            booksSearchCriteria.SetPublishDateStart(searchBookRequest.PublishDateStart);
-            booksSearchCriteria.SetPublishDateEnd(searchBookRequest.PublishDateEnd);
-            booksSearchCriteria.SortBy=searchBookRequest.SortBy;
-            booksSearchCriteria.SortOrder=searchBookRequest.SortOrder;
-
-            searchBookRequest.Page=booksSearchCriteria.Page;
-            searchBookRequest.SortBy = booksSearchCriteria.SortBy;
-            searchBookRequest.SortOrder = booksSearchCriteria.SortOrder;
-            searchBookRequest.Title = booksSearchCriteria.Search;
-            searchBookRequest.PublishDateStart = booksSearchCriteria.PublishDateStart;
-            searchBookRequest.PublishDateEnd = booksSearchCriteria.PublishDateEnd;
-            searchBookRequest.PageSize = booksSearchCriteria.Limit;
-
             PagedResultsResponse<BookModelResponse> booksSearchResults = await _booksService.SearchBooksAsync(searchBookRequest);
             
             return Ok(booksSearchResults);

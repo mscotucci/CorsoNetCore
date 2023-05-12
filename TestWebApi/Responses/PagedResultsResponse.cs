@@ -1,20 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace TestWebApi.Responses;
 
 public class PagedResultsResponse<T>
 {
     public int Page { get; private set; }
-    public decimal PageSize { get; private set; }
+    public int PageSize { get; private set; }
     public int TotalCount { get; private set; }
-    public int TotalPages => (int)Math.Ceiling(TotalCount / PageSize);
+    public int TotalPages => (int)Math.Ceiling(TotalCount / (decimal)PageSize);
     public List<T> Results { get; set; } = new List<T>();
 
     private PagedResultsResponse(int page, int pageSize, int totalCount)
     {
-        if (pageSize == 0) throw new ArgumentException("page size must be greater then zero");
-        Page = page;
-        PageSize = pageSize;
+        Page = Math.Max(1, page);
+        PageSize = Math.Max(1, pageSize);
         TotalCount = totalCount;
     }
 
@@ -22,8 +22,8 @@ public class PagedResultsResponse<T>
     {
         var instance = new PagedResultsResponse<T>(page, pageSize, totalCount);
         instance.Results = await query
-        .Skip((page - 1) * pageSize)
-        .Take(pageSize)
+        .Skip((instance.Page - 1) * instance.PageSize)
+        .Take(instance.PageSize)
         .ToListAsync();
         return instance;
     }
@@ -32,8 +32,8 @@ public class PagedResultsResponse<T>
     {
         var instance = new PagedResultsResponse<T>(page, pageSize, totalCount);
         instance.Results = query
-        .Skip((page - 1) * pageSize)
-        .Take(pageSize)
+        .Skip((instance.Page - 1) * instance.PageSize)
+        .Take(instance.PageSize)
         .ToList();
         return instance;
     }
