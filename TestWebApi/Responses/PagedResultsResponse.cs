@@ -9,7 +9,7 @@ public class PagedResultsResponse<T>
     public int PageSize { get; private set; }
     public int TotalCount { get; private set; }
     public int TotalPages => (int)Math.Ceiling(TotalCount / (decimal)PageSize);
-    public List<T> Results { get; set; } = new List<T>();
+    public List<T> Results { get; private set; } = new List<T>();
 
     private PagedResultsResponse(int page, int pageSize, int totalCount)
     {

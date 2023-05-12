@@ -24,6 +24,7 @@ namespace TestWebApi
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddTransient<IBooksService, BooksService>();
+            builder.Services.AddTransient<IAuthorsService, AuthorsService>();
 
             var app = builder.Build();
 
