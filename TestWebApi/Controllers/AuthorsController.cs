@@ -32,7 +32,7 @@ namespace TestWebApi.Controllers
 
         public async Task<IActionResult> CreateAuthor([FromBody] CreateAuthorRequest createAuthorRequest)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -64,6 +64,17 @@ namespace TestWebApi.Controllers
         {
             await _authorsService.DeleteAuthorAsync(id);
             return NoContent();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAuthor(int id)
+        {
+            var authorResponse= await _authorsService.ReadAuthorAsync(id);
+            if(authorResponse == null)
+            {
+                return NotFound();
+            }
+            return Ok(authorResponse);
         }
     }
 }
