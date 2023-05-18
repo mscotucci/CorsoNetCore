@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using TestWebApi.Application;
 using TestWebApi.Application.Impl;
 using TestWebApi.Infrastructure;
@@ -23,8 +27,26 @@ namespace TestWebApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
+                        ValidateAudience = true,
+                        ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:SecretKey").Value))
+                    };
+                });
+
             builder.Services.AddTransient<IBooksService, BooksService>();
             builder.Services.AddTransient<IAuthorsService, AuthorsService>();
+            builder.Services.AddTransient<ILoginService, LoginService>();
+            builder.Services.AddTransient<IJwtService, JwtService>();
+            builder.Services.AddTransient<IUsersService, UsersService>();
 
             var app = builder.Build();
 
@@ -45,6 +67,7 @@ namespace TestWebApi
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.Use(async (context, next) =>

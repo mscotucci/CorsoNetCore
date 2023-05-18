@@ -1,4 +1,5 @@
 ﻿using BookStoreApi.Requests.Books;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TestWebApi.Application;
 using TestWebApi.Exceptions;
@@ -41,6 +42,7 @@ namespace TestWebApi.Controllers
         
 
         [HttpPost]
+        [Authorize()]
         public async Task<IActionResult> CreateBook([FromBody] CreateBookRequest createBookRequest)
         {
             if(!ModelState.IsValid)
