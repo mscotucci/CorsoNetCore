@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestWebApi.Entities;
+using TestWebApi.Exceptions;
 using TestWebApi.Infrastructure;
 using TestWebApi.Requests.Users;
 using TestWebApi.Responses;
@@ -17,6 +18,11 @@ namespace TestWebApi.Application.Impl
         }
         public async Task<UserModelResponse> CreateUserAsync(CreateUserRequest createUserRequest)
         {
+            var isUseExist = await _dbContext.Users.AnyAsync(u => u.Username == createUserRequest.Username);
+            if (isUseExist)
+            {
+                throw new UserAlreadyExistException();
+            }
             User user = new User();
 
             user.Id = Guid.NewGuid();
@@ -25,14 +31,14 @@ namespace TestWebApi.Application.Impl
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
 
-            var response = new UserModelResponse { Id = user.Id.ToString(), Username = user.Username};
+            var response = new UserModelResponse { Id = user.Id.ToString(), Username = user.Username };
             return response;
         }
 
         public async Task DeleteUserAsync(string userId)
         {
             var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id.ToString() == userId);
-            if(user != null)
+            if (user != null)
             {
                 _dbContext.Users.Remove(user);
                 await _dbContext.SaveChangesAsync();
@@ -59,11 +65,12 @@ namespace TestWebApi.Application.Impl
         public async Task<PagedResultsResponse<UserModelResponse>> SearchUsersAsync(SearchUserRequest searchUserRequest)
         {
             IQueryable<User> query = _dbContext.Users.AsQueryable();
-            if(searchUserRequest.Username != null) {
+            if (searchUserRequest.Username != null)
+            {
                 query = query.Where(x => x.Username.Contains(searchUserRequest.Username));
             }
             int totalCount = await query.CountAsync();
-            IQueryable<UserModelResponse> select = query.Select(x => new UserModelResponse { Id = x.Id.ToString(), Username = x.Username});
+            IQueryable<UserModelResponse> select = query.Select(x => new UserModelResponse { Id = x.Id.ToString(), Username = x.Username });
             PagedResultsResponse<UserModelResponse> response = await PagedResultsResponse<UserModelResponse>.CreateAsync(
                 searchUserRequest.Page,
                 searchUserRequest.PageSize,
@@ -78,7 +85,7 @@ namespace TestWebApi.Application.Impl
         public async Task UpdateUserAsync(UpdateUserRequest updateUserRequest)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id.ToString() == updateUserRequest.Id);
-            if(user != null)
+            if (user != null)
             {
                 //Da completare quando aggiungeremo i campi
             }
