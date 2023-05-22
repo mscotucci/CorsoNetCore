@@ -1,0 +1,136 @@
+{
+	"info": {
+		"_postman_id": "cf5a15e6-c777-4a13-9615-132dff62b5c3",
+		"name": "Authors",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6564619",
+		"_collection_link": "https://warped-star-681566.postman.co/workspace/BookStore~50ecb872-7b3f-4c3e-8fe1-8fdea1d7da4d/collection/6564619-cf5a15e6-c777-4a13-9615-132dff62b5c3?action=share&creator=6564619&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Get Authors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Authors?Page=1&PageSize=2",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Authors"
+					],
+					"query": [
+						{
+							"key": "Page",
+							"value": "1"
+						},
+						{
+							"key": "PageSize",
+							"value": "2"
+						},
+						{
+							"key": "Name",
+							"value": "matt",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nome\": \"author nome\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Authors",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Author",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":10,\r\n    \"name\": \"Name Modificata\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Authors",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Author",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Authors/11",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Authors",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Author",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Authors/11",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Authors",
+						"11"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

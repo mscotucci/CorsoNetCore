@@ -1,0 +1,38 @@
+{
+	"info": {
+		"_postman_id": "4ce0a43d-ab0d-43d5-8ea4-4dfc04ac0340",
+		"name": "Login",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6564619",
+		"_collection_link": "https://warped-star-681566.postman.co/workspace/BookStore~50ecb872-7b3f-4c3e-8fe1-8fdea1d7da4d/collection/6564619-4ce0a43d-ab0d-43d5-8ea4-4dfc04ac0340?action=share&creator=6564619&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"guest\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

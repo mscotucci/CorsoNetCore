@@ -1,0 +1,56 @@
+{
+	"info": {
+		"_postman_id": "1bf2f0ea-3b8a-4143-bf7f-c126dbe5e1a4",
+		"name": "Roles",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6564619",
+		"_collection_link": "https://warped-star-681566.postman.co/workspace/BookStore~50ecb872-7b3f-4c3e-8fe1-8fdea1d7da4d/collection/6564619-1bf2f0ea-3b8a-4143-bf7f-c126dbe5e1a4?action=share&creator=6564619&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Create Role",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\":\"guest\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Roles",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Roles",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Roles",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Roles"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

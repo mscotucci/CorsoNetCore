@@ -9,16 +9,40 @@
 	"item": [
 		{
 			"name": "Get Books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"GetBooks_Should_Returns200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.totalCount).to.equal(12);\r",
+							"    pm.expect(responseJson.results.length).to.equal(12);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5OWM4Yjc0Mi1mNzY2LTQzOTYtNWEwOS0wOGRiNTUwYmEwYjEiLCJuYW1lIjoiYWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOlsiYWRtaW4iLCJ1c2VyIl0sImV4cCI6MTY4NDEzNDg3MSwiaXNzIjoiQm9va1N0b3JlIiwiYXVkIjoiQm9va1N0b3JlQXBpIn0.yhBcvK1DG60Btq5x0h0DXopmQGRupaOgNcVCdQ9cerI",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:7046/api/Books?Page=1&PageSize=20",
-					"protocol": "https",
+					"raw": "{{baseUrl}}/api/Books?Page=1&PageSize=20&SortBy=price&SortOrder=asc",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "7046",
 					"path": [
 						"api",
 						"Books"
@@ -44,8 +68,18 @@
 						},
 						{
 							"key": "PublishDateEnd",
-							"value": "2000-12-31",
+							"value": "2001-12-31",
 							"disabled": true
+						},
+						{
+							"key": "SortBy",
+							"value": "price",
+							"description": "title,publishDate,price,null(title)"
+						},
+						{
+							"key": "SortOrder",
+							"value": "asc",
+							"description": "asc,desc,null(asc)"
 						}
 					]
 				}
@@ -54,12 +88,40 @@
 		},
 		{
 			"name": "Create Books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"CreateBook_Should_Returns200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.id).to.greaterThan(0);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set(\"BookId\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3YjUzNzllMi0xZDAxLTRhOGItOGM4NC0zYWQwMDI4M2RlOWIiLCJuYW1lIjoiZ3Vlc3QiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJndWVzdCIsImV4cCI6MTY4NDc2MTExOSwiaXNzIjoiQm9va1N0b3JlIiwiYXVkIjoiQm9va1N0b3JlQXBpIn0.TQZalP0FiYNlRUW2RpztBY3muu-NfCU1AteYBEJJZrQ",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"authorId\": 8,\r\n    \"title\": \"Nuovo adfdsfsadf\",\r\n    \"genre\": \"Computer\",\r\n    \"price\": 89.67,\r\n    \"publishDate\": \"2023-12-09T00:00:00\",\r\n    \"description\": \"Descrizione\"\r\n}",
+					"raw": "{\r\n    \"authorId\": 1,\r\n    \"title\": \"Nuovo adfdsfsadf\",\r\n    \"genre\": \"Computer\",\r\n    \"price\": 89.67,\r\n    \"publishDate\": \"2023-12-09T00:00:00\",\r\n    \"description\": \"Descrizione\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -67,12 +129,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:7046/api/Books",
-					"protocol": "https",
+					"raw": "{{baseUrl}}/api/Books",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "7046",
 					"path": [
 						"api",
 						"Books"
@@ -83,12 +143,25 @@
 		},
 		{
 			"name": "Update Book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"UpdateBooks_Should_Returns204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\":19,\r\n    \"description\": \"Descrizione Modificata\"\r\n}",
+					"raw": "{\r\n    \"id\":{{BookId}},\r\n    \"description\": \"Descrizione Modificata Modificata\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -96,12 +169,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:7046/api/Books",
-					"protocol": "https",
+					"raw": "{{baseUrl}}/api/Books",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "7046",
 					"path": [
 						"api",
 						"Books"
@@ -112,20 +183,32 @@
 		},
 		{
 			"name": "Get Book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"GetBook_Should_Returns200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.response.to.not.have.jsonBody(\"error\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:7046/api/Books/18",
-					"protocol": "https",
+					"raw": "{{baseUrl}}/api/Books/{{BookId}}",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "7046",
 					"path": [
 						"api",
 						"Books",
-						"18"
+						"{{BookId}}"
 					]
 				}
 			},
@@ -133,20 +216,31 @@
 		},
 		{
 			"name": "Delete Book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"DeleteBook_Should_Returns204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:7046/api/Books/19",
-					"protocol": "https",
+					"raw": "{{baseUrl}}/api/Books/{{BookId}}",
 					"host": [
-						"localhost"
+						"{{baseUrl}}"
 					],
-					"port": "7046",
 					"path": [
 						"api",
 						"Books",
-						"19"
+						"{{BookId}}"
 					]
 				}
 			},
