@@ -17,12 +17,15 @@ public class JwtService : IJwtService
 
     public Task<string> GenerateAsync(User user)
     {
-
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub,user.Id.ToString()),
             new(JwtRegisteredClaimNames.Name,user.Username)
         };
+
+        var roleClaims = user.Roles.Select(x => new Claim(ClaimTypes.Role, x.Name));
+
+        claims.AddRange(roleClaims);
 
         var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:SecretKey").Value)), SecurityAlgorithms.HmacSha256);
 

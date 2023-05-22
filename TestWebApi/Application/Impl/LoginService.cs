@@ -19,7 +19,7 @@ public class LoginService : ILoginService
     public async Task<string> LoginAsync(LoginRequest loginRequest)
     {
        //Recuperiamo lo user dal db
-       var user = await _dbContext.Users.SingleOrDefaultAsync(x=>x.Username == loginRequest.Username);
+       var user = await _dbContext.Users.Include(x=>x.Roles).SingleOrDefaultAsync(x=>x.Username == loginRequest.Username);
         if (user == null)
         {
             throw new InvalidCredentialException();

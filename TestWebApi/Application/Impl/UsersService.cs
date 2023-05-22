@@ -27,7 +27,14 @@ namespace TestWebApi.Application.Impl
 
             user.Id = Guid.NewGuid();
             user.Username = createUserRequest.Username;
-
+            if(createUserRequest.Roles != null)
+            {
+                var roles = await _dbContext.Roles.Where(x=>createUserRequest.Roles.Contains(x.Name)).ToListAsync();
+                foreach (var role in roles)
+                {
+                    user.Roles.Add(role);
+                }
+            }
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
 

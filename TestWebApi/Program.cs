@@ -47,6 +47,7 @@ namespace TestWebApi
             builder.Services.AddTransient<ILoginService, LoginService>();
             builder.Services.AddTransient<IJwtService, JwtService>();
             builder.Services.AddTransient<IUsersService, UsersService>();
+            builder.Services.AddTransient<IRoleService, RolesService>();
 
             var app = builder.Build();
 

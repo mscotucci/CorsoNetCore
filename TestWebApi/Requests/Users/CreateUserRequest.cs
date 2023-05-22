@@ -7,5 +7,6 @@ namespace TestWebApi.Requests.Users
         [Required]
         [MaxLength(256)]
         public string Username { get; set; }
+        public string[]? Roles { get; set; } 
     }
 }
