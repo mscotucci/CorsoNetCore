@@ -2,7 +2,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using TestWebApi.Application;
 using TestWebApi.Application.Impl;
 using TestWebApi.Infrastructure;
@@ -22,10 +28,13 @@ namespace TestWebApi
             builder.Services.AddDbContext<BookStoreDbContext>(options => 
                 options.UseSqlServer(builder.Configuration.GetConnectionString("BookStoreDatabase")));
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c=> c.SchemaFilter<EnumSchemaFilter>());
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -87,6 +96,28 @@ namespace TestWebApi
             app.MapControllers();
 
             app.Run();
+        }
+    }
+
+    public class EnumSchemaFilter : ISchemaFilter
+    {
+        public void Apply(OpenApiSchema model, SchemaFilterContext context)
+        {
+            if (context.Type.IsEnum)
+            {
+                model.Enum.Clear();
+                foreach (string enumName in Enum.GetNames(context.Type))
+                {
+                    System.Reflection.MemberInfo memberInfo = context.Type.GetMember(enumName).FirstOrDefault(m => m.DeclaringType == context.Type);
+                    EnumMemberAttribute enumMemberAttribute = memberInfo == null
+                     ? null
+                     : memberInfo.GetCustomAttributes(typeof(EnumMemberAttribute), false).OfType<EnumMemberAttribute>().FirstOrDefault();
+                    string label = enumMemberAttribute == null || string.IsNullOrWhiteSpace(enumMemberAttribute.Value)
+                     ? enumName
+                     : enumMemberAttribute.Value;
+                    model.Enum.Add(new OpenApiString(label));
+                }
+            }
         }
     }
 }

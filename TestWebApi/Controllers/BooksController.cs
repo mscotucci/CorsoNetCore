@@ -42,7 +42,7 @@ namespace TestWebApi.Controllers
         
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateBook([FromBody] CreateBookRequest createBookRequest)
         {
             if(!ModelState.IsValid)

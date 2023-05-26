@@ -52,7 +52,7 @@ public class BooksServiceTest
         {
             AuthorId = author.Id,
             Description="Description",
-            Genre = Genre.ScienceFiction.ToString(),
+            Genre = Genre.ScienceFiction,
             Price=12,
             PublishDate=DateTime.Now,
             Title="Title",
